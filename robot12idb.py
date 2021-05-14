@@ -24,15 +24,17 @@ class RobotException(Exception):
 # UR3
 import os
 import sys
-sys.path.append(r"python-urx")
+#sys.path.append(r"python-urx")
+#import urx
+sys.path.append(r"UR12idb")
 
 import math3d as m3d
-import urx
 import logging
 import math
 import time
-from urx.robotiq_two_finger_gripper import Robotiq_Two_Finger_Gripper
-from urx.urdashboard import dashboard
+from robot import Robotiq_Two_Finger_Gripper
+from robot import Robot
+from urdashboard import dashboard
 
 def ind2sub(ind, array_shape):
     rows = int(ind / array_shape[1])
@@ -68,7 +70,8 @@ class UR3(QObject):
             IP = 'UR5-12IDC.xray.aps.anl.gov'
         self.logger = logging.getLogger(name)
         try:
-            self.robot = urx.Robot(IP)
+#            self.robot = urx.Robot(IP)
+            self.robot = Robot(IP)
         except TimeoutError:
             self.logger.info("UR3 comm time out error")
             exit
@@ -87,7 +90,6 @@ class UR3(QObject):
 
     def terminate(self):
         self.robot.close()
-        self.udpServer.disconnect() # shutoff network
 
     def get_status(self):
         return self.dashboard.get_status()
