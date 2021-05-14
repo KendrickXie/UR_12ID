@@ -9,14 +9,6 @@ from PyQt5.QtWidgets import QWidget
 
 import time
 import numpy
-# conda install -c anaconda freetype
-# conda install -c conda-forge ez_setup
-beamlinePV = '12idc:'
-beamlinePV2 = "12idb:"
-trans_motor_PV = 17
-vert_motor_PV = 18
-magazine_motor_PV = 20
-fingerPV = "9440:1:bo_0"
 
 class RobotException(Exception):
     pass
@@ -65,9 +57,9 @@ class UR3(QObject):
 # Y : positive - Along X-ray
 # Y : negative - Again X-ray
         if name == 'UR3':
-            IP="164.54.122.96"
+            IP="164.54.xxx.xxx"
         if name == 'UR5':
-            IP = 'UR5-12IDC.xray.aps.anl.gov'
+            IP = 'xxxx.xray.aps.anl.gov'
         self.logger = logging.getLogger(name)
         try:
 #            self.robot = urx.Robot(IP)
