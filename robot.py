@@ -4,8 +4,7 @@ from urx import robot, urscript, urrobot, robotiq_two_finger_gripper
 #import urpop
 #import urprimary
 #import urdashboard
-import urrtde
-import ursecmon
+from . import urrtde, ursecmon
 import math3d as m3d
 import logging
 import time
@@ -18,17 +17,7 @@ class Robot(robot.Robot):
 class URScript(urscript.URScript):
     def __init__(self):
         super().__init__(self)
-
-    def _set_standard_analog_output(self, input_id, signal_level):
-        assert(input_id in [0, 1])
-        assert(signal_level in [0, 1])
-        msg = "set_analog_output({}, {})".format(input_id, signal_level)
-        self.add_line_to_program(msg)
-
-    def _set_analog_output2var(self, varout):
-        msg = "set_standard_analog_output(0, {}/255)".format(varout)
-        self.add_line_to_program(msg)
-        
+    
     def _socket_get_var2var(self, var, varout, socket_name, prefix = ''):
         msg = "{}{} = socket_get_var(\"{}\",\"{}\")".format(prefix, varout, var, socket_name)
         self.add_line_to_program(msg)
@@ -37,10 +26,6 @@ class URScript(urscript.URScript):
         msg = "socket_send_byte(\"{}\",\"{}\")".format(str(byte), socket_name)  # noqa
         self.add_line_to_program(msg)
         self._sync()
-
-    def _sync(self, prefix = ''):
-        msg = "{}sync()".format(prefix)
-        self.add_line_to_program(msg)
 
 class URrobot(urrobot.URRobot):
     def __init__(self, host):
@@ -54,18 +39,6 @@ class URrobot(urrobot.URRobot):
         self.rtmon = urrtde.URRTMonitor(self.host)
         self.rtmon.start()
 
-    def is_protective_stopped(self):
-        if self.secmon.running is False:
-            return self.secmon._dict["RobotModeData"]["isSecurityStopped"]
-        else:
-            return False
-
-    def set_standard_analog_out(self, output, val):
-        """
-        set analog output, val is a float
-        """
-        prog = "set_standard_analog_out(%s, %s)" % (output, val)
-        self.send_program(prog)
 
 class RobotiqScript12ID(robotiq_two_finger_gripper.RobotiqScript): 
     def __init__(self, host, port, sname):
@@ -80,11 +53,6 @@ class RobotiqScript12ID(robotiq_two_finger_gripper.RobotiqScript):
         self.add_line_to_program(msg)
         self.add_line_to_program('textmsg("gripper=", rq_pos)')
 
-    def _define_rq_current_pos(self):
-        self.add_line_to_program('def rq_current_pos(gripper_socket="gripper_socket"):')
-        self._socket_get_var2var(robotiq_two_finger_gripper.POS, 'rq_pos ', self.socket_name, prefix='\t')
-        self.add_line_to_program('\treturn rq_pos')
-        self.add_line_to_program('end')
 
 SOCKET_HOST = "127.0.0.1"
 SOCKET_PORT = 63352
@@ -184,7 +152,7 @@ class Robotiq_Two_Finger_Gripper(robotiq_two_finger_gripper.Robotiq_Two_Finger_G
         """
         urscript = self._get_finger_urscript()
         urscript._sleep(0.1)
-    #        urscript._define_rq_current_pos()
+  
         # Move to the position
         urscript._get_gripper_position()
         urscript._sync()
