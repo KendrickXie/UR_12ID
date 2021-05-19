@@ -3,8 +3,9 @@ import logging
 import sys
 import threading
 sys.path.append('..')
-import rtde as rtde
-import rtde.rtde_config as rtde_config
+sys.path.append('ur-rtde')
+import rtde
+import rtde_config
 import os
 
 #parameters
