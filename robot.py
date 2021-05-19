@@ -12,8 +12,15 @@ import time
 
 class Robot(robot.Robot):
     def __init__(self, host) -> None:
-        URrobot.__init__(self, host)
+        urrobot.URRobot.__init__(self, host, use_rt=False, urFirm=None)
         self.csys = m3d.Transform()
+        FORMAT = '%(message)s'
+        logging.basicConfig(format=FORMAT)
+        self.logger = logging.getLogger("myrobot")
+
+        #self.secmon = ursecmon.SecondaryMonitor(self.host)  # data from robot at 10Hz
+        self.rtmon = urrtde.URRTMonitor(self.host)
+        self.rtmon.start()
 
 class URScript(urscript.URScript):
     def __init__(self):
@@ -28,17 +35,17 @@ class URScript(urscript.URScript):
         self.add_line_to_program(msg)
         self._sync()
 
-class URrobot(urrobot.URRobot):
-    def __init__(self, host):
-        FORMAT = '%(message)s'
-        logging.basicConfig(format=FORMAT)
-        self.logger = logging.getLogger("myrobot")
+# class URrobot(urrobot.URRobot):
+#     def __init__(self, host):
+#         FORMAT = '%(message)s'
+#         logging.basicConfig(format=FORMAT)
+#         self.logger = logging.getLogger("myrobot")
 
-        self.host = host
-        self.csys = None
-        self.secmon = ursecmon.SecondaryMonitor(self.host)  # data from robot at 10Hz
-        self.rtmon = urrtde.URRTMonitor(self.host)
-        self.rtmon.start()
+#         self.host = host
+#         self.csys = None
+#         self.secmon = ursecmon.SecondaryMonitor(self.host)  # data from robot at 10Hz
+#         self.rtmon = urrtde.URRTMonitor(self.host)
+#         self.rtmon.start()
 
 
 class RobotiqScript12ID(robotiq_two_finger_gripper.RobotiqScript): 
