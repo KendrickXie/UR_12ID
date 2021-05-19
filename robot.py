@@ -1,10 +1,11 @@
 import sys
 sys.path.append(r"python-urx")
-from urx import robot, urscript, urrobot, robotiq_two_finger_gripper
+sys.path.append(r"ur-rtde")
+from urx import robot, ursecmon, urscript, urrobot, robotiq_two_finger_gripper
 #import urpop
 #import urprimary
 #import urdashboard
-from . import urrtde, ursecmon
+import urrtde
 import math3d as m3d
 import logging
 import time
@@ -35,7 +36,7 @@ class URrobot(urrobot.URRobot):
 
         self.host = host
         self.csys = None
-        self.secmon = ursecmon.SecondaryMonitor(self.host, False)  # data from robot at 10Hz
+        self.secmon = ursecmon.SecondaryMonitor(self.host)  # data from robot at 10Hz
         self.rtmon = urrtde.URRTMonitor(self.host)
         self.rtmon.start()
 
