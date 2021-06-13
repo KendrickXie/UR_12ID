@@ -101,7 +101,6 @@ class URRTMonitor(threading.Thread):
 
         # get controller version
         self.con.get_controller_version()
-        print("test")
         # setup recipes
         if not self.con.send_output_setup(output_names, output_types, frequency = args.frequency):
             logging.error('Unable to configure output')
