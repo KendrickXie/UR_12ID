@@ -28,9 +28,6 @@ dirname = os.path.dirname(os.path.abspath(__file__))
 conf = rtde_config.ConfigFile(os.path.join(dirname, args.config))
 output_names, output_types = conf.get_recipe('out')
 
-con = rtde.RTDE(args.host, args.port)
-
-
 class URRTMonitor(threading.Thread):
 
     def __init__(self, urHost):
@@ -38,6 +35,10 @@ class URRTMonitor(threading.Thread):
         self.logger = logging.getLogger(self.__class__.__name__)
         self._stop_event = True
         self._csys_lock = threading.Lock()
+        if len(urHost) > 0:
+            self.con = rtde.RTDE(urHost, args.port)
+        else:
+            self.con = rtde.RTDE(args.host, args.port)
 
     def set_csys(self, csys):
         with self._csys_lock:
@@ -96,24 +97,24 @@ class URRTMonitor(threading.Thread):
         #start data synchronization
         self._stop_event = False
 
-        con.connect()
+        self.con.connect()
 
         # get controller version
-        con.get_controller_version()
-
+        self.con.get_controller_version()
+        print("test")
         # setup recipes
-        if not con.send_output_setup(output_names, output_types, frequency = args.frequency):
+        if not self.con.send_output_setup(output_names, output_types, frequency = args.frequency):
             logging.error('Unable to configure output')
             sys.exit()
 
-        if not con.send_start():
+        if not self.con.send_start():
             logging.error('Unable to start synchronization')
             sys.exit()
 
         while not self._stop_event:
             if args.buffered:
-                self.state = con.receive_buffered(args.binary)
+                self.state = self.con.receive_buffered(args.binary)
             else:
-                self.state = con.receive(args.binary)
-        con.send_pause()
-        con.disconnect()
+                self.state = self.con.receive(args.binary)
+        self.con.send_pause()
+        self.con.disconnect()
