@@ -1,3 +1,7 @@
+
+# Prerequsite
+This requires https://github.com/Byeongdulee/python-urx
+
 Some classes in this folder inherit the corresponding classes of python-urx.
 Some classes are completely new and written based on the URscript of python-urx.
 The secondary monitor of python-urx was rewritten for better use at the APS.
