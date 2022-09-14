@@ -1,6 +1,9 @@
 
 # Prerequsite and History
-This requires https://github.com/Byeongdulee/python-urx
+python-urx, which you can install from pypi.org using pip install.
+
+Part of codes here are duplicates of my python-urx fork.
+https://github.com/Byeongdulee/python-urx
 
 Some classes in this folder inherit the corresponding classes of python-urx.
 Some classes are completely new and written based on the URscript of python-urx.
