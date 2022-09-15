@@ -117,11 +117,12 @@ class camera(object):
             if not ret:
                 print("Fail to capture camera.")
             # else:
-            #     print("read successfuuly.")
+            #     print("read successfuly.")
         self.image = pilImage
         return ret, pilImage
 
     def decode(self, p0in=(0,0), p1in=(0,0), imgwidth=866, imgheight=650, color = (0, 0, 255), thickness = 1):
+        '''Returns the data of the QR code, center pixels of the code, pixel size of the code, and distance of the edges of the code'''
         #imgdata = self.image
         opencvimage = np.array(self.image)
         imgdata = opencvimage[:,:,::-1].copy()
@@ -362,5 +363,9 @@ class camera(object):
 
     def save(self, filename = "capture"):
         if self.image is not None:
-            self.image.save(filename+".png")
-            print("saved")
+            try:
+                self.image.save(filename+".png")
+                print("saved: PIL")
+            except:
+                cv2.imwrite(filename+".png",self.image)
+                print("saved: CV2")
